@@ -3,9 +3,12 @@ package com.example.api_vet.services;
 import com.example.api_vet.models.ServicoModel;
 import com.example.api_vet.repostiories.ServicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ServicoService {
@@ -44,6 +47,10 @@ public class ServicoService {
     }
 
     public void deleteById(String id) {
+        ServicoModel servico = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Servico não encontrado com id: " + id));
+
         repository.deleteById(id);
     }
+
 }

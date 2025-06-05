@@ -12,7 +12,7 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("API de Gerenciamento de Animais")
+                        .title("API Clínica Veterinária de Animais")
                         .description("API para gerenciamento de pessoas, animais e serviços")
                         .version("1.0"));
     }

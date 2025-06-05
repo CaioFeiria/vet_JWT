@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -32,7 +33,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com id: " + id));
     }
 
-    public UserModel getByUser(String user) {
+    public Optional<UserModel> getByUser(String user) {
         return repository.findByUser(user);
     }
 
@@ -53,13 +54,21 @@ public class UserService {
         repository.deleteById(id);
     }
 
-    public UserModel authenticate(String username, String senhaInformada) {
-        UserModel usuario = repository.findByUser(username);
+    public Optional<UserModel> authenticate(String username, String senhaInformada) {
+        Optional<UserModel> usuario = repository.findByUser(username);
 
-        if (!usuario.getPassword().equals(senhaInformada)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Senha incorreta");
+        if (usuario.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Esse usuário não possui cadastro.");
         }
 
+        UserModel user = usuario.get();
+
+        if (!user.getUser().equals(username)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Esse usuário não possui cadastro.");
+        }
+        if (!user.getPassword().equals(senhaInformada)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuario ou senha incorreta");
+        }
         return usuario;
     }
 }

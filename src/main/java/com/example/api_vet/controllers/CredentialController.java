@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/logar")
 @Tag(name = "Validar Login", description = "End point post para validar login e pegar o token de autorização.")
@@ -31,8 +33,8 @@ public class CredentialController {
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
 
-            UserModel usuario = service.authenticate(loginRequest.getUser(), loginRequest.getPassword());
-            String token = jwt.generateToken(usuario.getUser());
+            Optional<UserModel> usuario = service.authenticate(loginRequest.getUser(), loginRequest.getPassword());
+            String token = jwt.generateToken(usuario.get().getUser());
 
             return ResponseEntity.ok(new ResponseToken("Authenticated", token));
 
